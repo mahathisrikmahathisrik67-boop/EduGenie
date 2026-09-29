@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#edf3ef">
+  <title>EduGenie | Learning Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20312d;
+      --muted: #687874;
+      --line: #d8e2dc;
+      --paper: #edf3ef;
+      --white: #fffefa;
+      --green: #16695d;
+      --green-dark: #0e554b;
+      --green-pale: #e3efea;
+      --coral: #c85e4b;
+      --gold: #e9b94f;
+      --blue: #527694;
+      --shadow: 0 18px 48px rgba(35, 61, 52, .08);
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image: repeating-linear-gradient(0deg, transparent 0 35px, rgba(58, 102, 87, .035) 36px);
+      font-family: "DM Sans", sans-serif;
+      font-size: 15px;
+    }
+
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      height: 72px;
+      padding: 0 max(24px, calc((100vw - 1120px) / 2));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(32, 49, 45, .1);
+      background: rgba(255, 254, 250, .78);
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; letter-spacing: 0; }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      background: var(--green);
+      border-radius: 9px 9px 9px 3px;
+      font-family: "Fraunces", serif;
+      font-size: 20px;
+    }
+    .brand-name { font-size: 16px; }
+    .topbar-status { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #63a778; box-shadow: 0 0 0 3px #e2eee4; }
+
+    main { width: min(1050px, calc(100% - 40px)); margin: 54px auto 72px; }
+    .intro { margin: 0 0 28px; animation: appear .45s ease-out both; }
+    .eyebrow { margin: 0 0 9px; color: var(--coral); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; }
+    h1, h2, p { margin-top: 0; }
+    h1 { margin-bottom: 0; font-family: "Fraunces", Georgia, serif; font-size: 42px; line-height: 1.12; font-weight: 500; }
+    h1 span { color: var(--green); }
+
+    .tool-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 0 14px;
+      padding: 5px;
+      border: 1px solid rgba(32, 49, 45, .09);
+      border-radius: 8px;
+      background: rgba(255, 254, 250, .65);
+      animation: appear .5s .06s ease-out both;
+    }
+    .tool-tab {
+      min-height: 39px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 5px;
+      color: #586762;
+      background: transparent;
+      font-weight: 600;
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+    }
+    .tool-tab:hover { color: var(--green-dark); background: var(--green-pale); }
+    .tool-tab[aria-selected="true"] { color: white; background: var(--green); box-shadow: 0 2px 5px rgba(18, 76, 65, .15); }
+    .tool-tab:active { transform: translateY(1px); }
+
+    .workspace {
+      min-height: 400px;
+      overflow: hidden;
+      border: 1px solid rgba(32, 49, 45, .11);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+      animation: rise .5s .1s ease-out both;
+    }
+    .workspace-grid { min-height: 400px; display: grid; grid-template-columns: minmax(280px, .83fr) minmax(0, 1.17fr); }
+    .input-side { padding: 32px 34px; border-right: 1px solid var(--line); }
+    .result-side { display: flex; flex-direction: column; min-width: 0; padding: 31px 34px; background: #fbfcf9; }
+    .section-kicker { margin: 0 0 8px; color: var(--green); font-size: 10px; line-height: 1.3; font-weight: 700; letter-spacing: 1.35px; text-transform: uppercase; }
+    h2 { margin-bottom: 24px; font-family: "Fraunces", Georgia, serif; font-size: 27px; line-height: 1.2; font-weight: 500; }
+    label { display: block; margin-bottom: 8px; color: #455550; font-size: 13px; font-weight: 700; }
+    input[type="text"], textarea {
+      display: block;
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid #cfdad3;
+      border-radius: 5px;
+      outline: none;
+      color: var(--ink);
+      background: #fff;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+    textarea { min-height: 166px; resize: vertical; line-height: 1.55; }
+    input::placeholder, textarea::placeholder { color: #9aa6a0; }
+    input:focus, textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22, 105, 93, .12); }
+    .submit-button {
+      min-height: 45px;
+      margin-top: 14px;
+      padding: 0 17px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 5px;
+      color: white;
+      background: var(--green);
+      font-size: 13px;
+      font-weight: 700;
+      transition: background .18s ease, transform .18s ease;
+    }
+    .submit-button:hover { background: var(--green-dark); }
+    .submit-button:active { transform: translateY(1px); }
+    .submit-button:disabled { cursor: wait; opacity: .72; }
+    .button-arrow { font-size: 17px; line-height: 1; }
+
+    .result-heading { min-height: 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .result-heading .section-kicker { margin: 0; }
+    .result-body { flex: 1; color: #374841; font-size: 15px; line-height: 1.75; overflow-wrap: anywhere; }
+    .empty-state { height: 100%; min-height: 260px; display: grid; align-content: center; justify-items: center; text-align: center; color: var(--muted); }
+    .empty-mark { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 50%; color: var(--green); background: #f2f7f3; font-family: "Fraunces", serif; font-size: 21px; }
+    .empty-state strong { margin-bottom: 4px; color: #44554e; font-size: 14px; }
+    .empty-state span { font-size: 12px; }
+    .error-message { color: #a53f32; }
+
+    .quiz-question { margin: 0 0 20px; padding: 0 0 17px; border: 0; border-bottom: 1px solid var(--line); }
+    .quiz-question legend { width: 100%; margin-bottom: 10px; color: var(--ink); font-weight: 700; line-height: 1.5; }
+    .quiz-option { display: flex; align-items: flex-start; gap: 9px; margin: 8px 0; color: #465751; font-size: 14px; font-weight: 400; cursor: pointer; }
+    .quiz-option input { flex: 0 0 auto; margin: 3px 0 0; accent-color: var(--green); }
+    .quiz-question.is-correct { border-left: 3px solid #63a778; padding-left: 10px; }
+    .quiz-question.is-wrong { border-left: 3px solid var(--coral); padding-left: 10px; }
+    .quiz-score { margin: 12px 0 0; color: var(--green-dark); font-weight: 700; }
+    .check-button { margin-top: 0; }
+
+    footer { margin-top: 18px; color: #7b8982; font-size: 11px; }
+    @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 700px) {
+      main { width: min(100% - 28px, 560px); margin-top: 36px; }
+      .topbar { height: 62px; padding: 0 16px; }
+      .topbar-status { font-size: 11px; }
+      h1 { font-size: 35px; }
+      .tool-tabs { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; }
+      .tool-tab { min-width: 0; padding: 0 5px; font-size: 12px; }
+      .workspace-grid { display: block; }
+      .input-side { padding: 25px 22px 26px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .result-side { min-height: 245px; padding: 23px 22px; }
+      .empty-state { min-height: 160px; }
+      textarea { min-height: 138px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" aria-label="EduGenie home">
+      <span class="brand-mark" aria-hidden="true">E</span>
+      <span class="brand-name">EduGenie</span>
+    </div>
+    <div class="topbar-status"><span class="status-dot" aria-hidden="true"></span> Learning studio</div>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">YOUR STUDY SPACE</p>
+      <h1 id="page-title">Welcome to <span>EduGenie</span></h1>
+    </section>
+
+    <nav class="tool-tabs" role="tablist" aria-label="Study tools">
+      <button class="tool-tab" id="tab-qa" type="button" role="tab" aria-selected="true" aria-controls="panel-qa" tabindex="0" data-tab="qa">Ask</button>
+      <button class="tool-tab" id="tab-explain" type="button" role="tab" aria-selected="false" aria-controls="panel-explain" tabindex="-1" data-tab="explain">Explain</button>
+      <button class="tool-tab" id="tab-summary" type="button" role="tab" aria-selected="false" aria-controls="panel-summary" tabindex="-1" data-tab="summary">Summarize</button>
+      <button class="tool-tab" id="tab-quiz" type="button" role="tab" aria-selected="false" aria-controls="panel-quiz" tabindex="-1" data-tab="quiz">Quiz</button>
+    </nav>
+
+    <section class="workspace">
+      <section class="tool-panel" id="panel-qa" role="tabpanel" aria-labelledby="tab-qa" data-panel="qa">
+        <div class="workspace-grid">
+          <div class="input-side">
+            <p class="section-kicker">Question and answer</p>
+            <h2>What are you curious about?</h2>
+            <form id="qaForm">
+              <label for="question">Your question</label>
+              <input type="text" id="question" name="question" placeholder="Why is the sky blue?" required>
+              <button class="submit-button" type="submit">Get answer <span class="button-arrow" aria-hidden="true">↗</span></button>
+            </form>
+          </div>
+          <div class="result-side">
+            <div class="result-heading"><p class="section-kicker">EduGenie responds</p></div>
+            <div id="qaResult" class="result-body" aria-live="polite" aria-atomic="true"><div class="empty-state"><span class="empty-mark" aria-hidden="true">?</span><strong>Ready when you are</strong><span>Your response will appear here.</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool-panel" id="panel-explain" role="tabpanel" aria-labelledby="tab-explain" data-panel="explain" hidden>
+        <div class="workspace-grid">
+          <div class="input-side">
+            <p class="section-kicker">Concept guide</p>
+            <h2>Make a topic click.</h2>
+            <form id="explainForm">
+              <label for="topic">What would you like explained?</label>
+              <input type="text" id="topic" name="topic" placeholder="Photosynthesis" required>
+              <button class="submit-button" type="submit">Explain <span class="button-arrow" aria-hidden="true">↗</span></button>
+            </form>
+          </div>
+          <div class="result-side">
+            <div class="result-heading"><p class="section-kicker">Simple explanation</p></div>
+            <div id="explanationResult" class="result-body" aria-live="polite" aria-atomic="true"><div class="empty-state"><span class="empty-mark" aria-hidden="true">✳</span><strong>A clearer picture</strong><span>Your explanation will appear here.</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool-panel" id="panel-summary" role="tabpanel" aria-labelledby="tab-summary" data-panel="summary" hidden>
+        <div class="workspace-grid">
+          <div class="input-side">
+            <p class="section-kicker">Reading desk</p>
+            <h2>Keep the important parts.</h2>
+            <form id="summaryForm">
+              <label for="summaryText">Text to summarize</label>
+              <textarea id="summaryText" name="text" placeholder="Paste a passage here..." required></textarea>
+              <button class="submit-button" type="submit">Summarize <span class="button-arrow" aria-hidden="true">↗</span></button>
+            </form>
+          </div>
+          <div class="result-side">
+            <div class="result-heading"><p class="section-kicker">Short summary</p></div>
+            <div id="summaryResult" class="result-body" aria-live="polite" aria-atomic="true"><div class="empty-state"><span class="empty-mark" aria-hidden="true">≡</span><strong>Room for the main idea</strong><span>Your summary will appear here.</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool-panel" id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz" data-panel="quiz" hidden>
+        <div class="workspace-grid">
+          <div class="input-side">
+            <p class="section-kicker">Recall practice</p>
+            <h2>Test what you know.</h2>
+            <form id="quizForm">
+              <label for="quizText">Topic or study passage</label>
+              <textarea id="quizText" name="text" placeholder="Paste notes or enter a topic, such as the Solar System..." required></textarea>
+              <button class="submit-button" type="submit">Generate quiz <span class="button-arrow" aria-hidden="true">↗</span></button>
+            </form>
+          </div>
+          <div class="result-side">
+            <div class="result-heading"><p class="section-kicker">Three questions</p></div>
+            <div id="quizResult" class="result-body" aria-live="polite" aria-atomic="true"><div class="empty-state"><span class="empty-mark" aria-hidden="true">A</span><strong>Practice makes progress</strong><span>Your questions will appear here.</span></div></div>
+          </div>
+        </div>
+      </section>
+    </section>
+    <footer>EduGenie <span aria-hidden="true">·</span> Learning, one idea at a time</footer>
+  </main>
+
+  <script>
+    const tabs = [...document.querySelectorAll("[role='tab']")];
+    const panels = [...document.querySelectorAll("[data-panel]")];
+
+    function activateTab(tab, moveFocus = false) {
+      tabs.forEach((item) => {
+        const selected = item === tab;
+        item.setAttribute("aria-selected", String(selected));
+        item.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== tab.dataset.tab;
+      });
+      if (moveFocus) tab.focus();
+    }
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateTab(tab));
+      tab.addEventListener("keydown", (event) => {
+        let nextIndex = index;
+        if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
+        else if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === "Home") nextIndex = 0;
+        else if (event.key === "End") nextIndex = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        activateTab(tabs[nextIndex], true);
+      });
+    });
+
+    async function requestJson(url, options) {
+      const response = await fetch(url, options);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || data.detail || `Request failed (${response.status})`);
+      return data;
+    }
+
+    function showMessage(element, message, isError = false) {
+      element.replaceChildren();
+      const content = document.createElement("p");
+      content.textContent = message;
+      if (isError) content.className = "error-message";
+      element.append(content);
+    }
+
+    function postText(endpoint, text) {
+      return requestJson(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
+      });
+    }
+
+    function bindTextForm(formId, resultId, getRequest, getText) {
+      const form = document.getElementById(formId);
+      const result = document.getElementById(resultId);
+      const submitButton = form.querySelector("button[type='submit']");
+      const initialLabel = submitButton.firstChild.textContent.trim();
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const text = getText().trim();
+        if (!text) return;
+        submitButton.disabled = true;
+        submitButton.firstChild.textContent = "Working... ";
+        showMessage(result, "Working on it...");
+        try {
+          const data = await getRequest(text);
+          showMessage(result, data.answer || data.explanation || data.summary || "No response was returned.");
+        } catch (error) {
+          showMessage(result, error.message || "Something went wrong.", true);
+        } finally {
+          submitButton.disabled = false;
+          submitButton.firstChild.textContent = `${initialLabel} `;
+        }
+      });
+    }
+
+    bindTextForm("qaForm", "qaResult", (question) => {
+      const query = new URLSearchParams({ question });
+      return requestJson(`/qa?${query}`);
+    }, () => document.getElementById("question").value);
+
+    bindTextForm("explainForm", "explanationResult", (topic) => requestJson("/explain/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topic })
+    }), () => document.getElementById("topic").value);
+
+    bindTextForm("summaryForm", "summaryResult", (text) => postText("/summarize/", text), () => document.getElementById("summaryText").value);
+
+    document.getElementById("quizForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button[type='submit']");
+      const buttonText = button.firstChild.textContent.trim();
+      const result = document.getElementById("quizResult");
+      const text = document.getElementById("quizText").value.trim();
+      if (!text) return;
+      button.disabled = true;
+      button.firstChild.textContent = "Working... ";
+      showMessage(result, "Building your quiz...");
+
+      try {
+        const data = await postText("/quiz/", text);
+        renderQuiz(result, data.quiz || []);
+      } catch (error) {
+        showMessage(result, error.message || "Something went wrong.", true);
+      } finally {
+        button.disabled = false;
+        button.firstChild.textContent = `${buttonText} `;
+      }
+    });
+
+    function renderQuiz(container, questions) {
+      container.replaceChildren();
+      if (!Array.isArray(questions) || questions.length === 0) {
+        showMessage(container, "No questions were returned.", true);
+        return;
+      }
+
+      const questionNodes = questions.map((question, index) => {
+        const fieldset = document.createElement("fieldset");
+        fieldset.className = "quiz-question";
+        fieldset.dataset.answer = question.answer;
+        const legend = document.createElement("legend");
+        legend.textContent = `${index + 1}. ${question.question}`;
+        fieldset.append(legend);
+
+        question.options.forEach((option, optionIndex) => {
+          const label = document.createElement("label");
+          label.className = "quiz-option";
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `quiz-question-${index}`;
+          radio.value = option;
+          radio.id = `quiz-${index}-${optionIndex}`;
+          const choice = document.createElement("span");
+          choice.textContent = option;
+          label.htmlFor = radio.id;
+          label.append(radio, choice);
+          fieldset.append(label);
+        });
+        container.append(fieldset);
+        return fieldset;
+      });
+
+      const checkButton = document.createElement("button");
+      checkButton.type = "button";
+      checkButton.className = "submit-button check-button";
+      checkButton.textContent = "Check answers";
+      const score = document.createElement("p");
+      score.className = "quiz-score";
+      score.setAttribute("aria-live", "polite");
+      checkButton.addEventListener("click", () => {
+        let correct = 0;
+        questionNodes.forEach((question) => {
+          const selection = question.querySelector("input:checked");
+          const isCorrect = selection?.value === question.dataset.answer;
+          question.classList.toggle("is-correct", Boolean(isCorrect));
+          question.classList.toggle("is-wrong", Boolean(selection) && !isCorrect);
+          if (isCorrect) correct += 1;
+        });
+        score.textContent = `${correct} of ${questionNodes.length} correct`;
+      });
+      container.append(checkButton, score);
+    }
+  </script>
+</body>
+</html>
